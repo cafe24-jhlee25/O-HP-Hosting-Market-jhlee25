@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>마켓 배너 CTA 카피 시안 모음</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+    background: #f5f6f8;
+    padding: 40px;
+    color: #1a1a1a;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 22px;
+    margin: 0 0 8px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 32px;
+  }
+  h2 {
+    margin: 36px 0 12px;
+    font-size: 15px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .label {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .label.v0 { background: #ffe9e9; color: #d32f2f; }
+  .label.v1 { background: #fff4e0; color: #e67e00; }
+  .label.v2 { background: #e3f2fd; color: #1565c0; }
+  .label.v3 { background: #ede7f6; color: #5e35b1; }
+  .label.v4 { background: #e0f7fa; color: #00838f; }
+  .label.v5 { background: #e8f5e9; color: #2e7d32; }
+  .label.v6 { background: #fce4ec; color: #c2185b; }
+
+  .banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #eef4ff;
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+  .banner .icon {
+    width: 48px;
+    height: 48px;
+    background: #c7dcff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .banner .content { flex: 1; }
+  .banner .title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .banner .desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+  }
+  .banner .actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-primary { background: #2b6cff; color: #fff; }
+  .btn-secondary { background: #fff; color: #333; border: 1px solid #d0d5dd; }
+
+  .memo {
+    font-size: 12px;
+    color: #777;
+    margin-top: 8px;
+    padding-left: 4px;
+    line-height: 1.6;
+  }
+  .memo b { color: #333; }
+  .warn { color: #d32f2f; font-weight: 600; }
+  .ok { color: #2e7d32; font-weight: 600; }
+
+  .section-title {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 2px solid #e5e7eb;
+    font-size: 18px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<h1>마켓 배너 카피 시안 모음</h1>
+<p class="subtitle">지금까지 논의된 모든 버전을 한 곳에 모아봤어요. 선택/조합해서 최종안 확정용.</p>
+
+<!-- ============================================ -->
+<div class="section-title">현재 운영 카피</div>
+
+<h2><span class="label v0">V0</span>현재 (Before)</h2>
+<div class="banner">
+  <div class="icon">🏪</div>
+  <div class="content">
+    <div class="title">마켓 연동 셋팅하실래요?</div>
+    <div class="desc">마켓과 연동하면 쿠팡, 네이버 등 주요 마켓에도 상품을 자동으로 등록할 수 있어요.</div>
+  </div>
+  <div class="actions">
+    <button class="btn btn-secondary">셋팅하기</button>
+  </div>
+</div>
+<p class="memo"><span class="warn">문제</span> 버튼 1개라 CTA 분리 불가. '셋팅하기' 문구가 QR 모달 여는 동작과 의미 불일치.</p>
+
+<!-- ============================================ -->
+<div class="section-title">초안 (CTA 분리 반영)</div>
+
+<h2><span class="label v1">V1</span>1차안 — 기본 분리</h2>
+<div class="banner">
+  <div class="icon">🏪</div>
+  <div class="content">
+    <div class="title">쿠팡, 네이버에도 이 상품 올려볼까요?</div>
+    <div class="desc">마켓과 연동하면 주요 마켓에도 상품을 자동으로 등록할 수 있어요.</div>
+  </div>
+  <div class="actions">
+    <button class="btn btn-secondary">알아보기</button>
+    <button class="btn btn-primary">바로 신청하기</button>
+  </div>
+</div>
+<p class="memo">베니핏 타이틀 + 기본 CTA 2분리. 가장 무난.</p>
+
+<!-- ============================================ -->
+<div class="section-title">Toss UX 원칙 1차 적용</div>
+
+<h2><span class="label v2">V2</span>2차안 — 1인칭 + 숫자 + 시간 (※ '1분' 허위 소지)</h2>
+<div class="banner">
+  <div class="icon">🏪</div>
+  <div class="content">
+    <div class="title">방금 등록한 이 상품, 쿠팡·네이버에도 올려볼까요?</div>
+    <div class="desc">연동만 해두면 주요 마켓 19곳에 자동으로 등록돼요. 설정은 1분이면 끝나요.</div>
+  </div>
+  <div class="actions">
+    <button class="btn btn-secondary">먼저 알아볼게요</button>
+    <button class="btn btn-primary">지금 연동할래요</button>
+  </div>
+</div>
+<p class="memo"><span class="warn">문제</span> '1분' 검증 불가(허위 소지). '방금 등록한' 사실 부정확(요청 상태임).</p>
+
+<!-- ============================================ -->
+<div class="section-title">Toss UX 원칙 재점검 반영</div>
+
+<h2><span class="label v3">V3</span>재수정안 (권장) — '같이' + '한 번' + 국내외</h2>
+<div class="banner">
+  <div class="icon">🏪</div>
+  <div class="content">
+    <div class="title">이 상품, 쿠팡·네이버에도 같이 올려볼까요?</div>
+    <div class="desc">한 번 연동해두면 국내외 마켓 최대 19곳에 자동으로 등록돼요.</div>
+  </div>
+  <div class="actions">
+    <button class="btn btn-secondary">알아볼게요</button>
+    <button class="btn btn-primary">연동할래요</button>
+  </div>
+</div>
+<p class="memo"><span class="ok">장점</span> 허위 제거, '같이'로 동시 판매 의미 강화, '한 번'으로 일회성 노력 대비 지속 혜택 강조. CTA도 군더더기 제거.</p>
+
+<h2><span class="label v4">V4</span>대안 A — 더 담백</h2>
+<div class="banner">
+  <div class="icon">🏪</div>
+  <div class="content">
+    <div class="title">이 상품, 다른 마켓에도 올려볼까요?</div>
+    <div class="desc">한 번 연동하면 국내외 마켓 19곳에 자동으로 등록돼요.</div>
+  </div>
+  <div class="actions">
+    <button class="btn btn-secondary">알아볼게요</button>
+    <button class="btn btn-primary">연동할래요</button>
+  </div>
+</div>
+<p class="memo">대표 마켓명 생략, 가장 담백. 타이틀 무게를 가볍게 할 때.</p>
+
+<h2><span class="label v5">V5</span>대안 B — 베니핏 직접 (※ 판매 보장 뉘앙스 주의)</h2>
+<div class="banner">
+  <div class="icon">🏪</div>
+  <div class="content">
+    <div class="title">같은 상품, 19곳에서 팔아볼까요?</div>
+    <div class="desc">쿠팡·네이버부터 해외 마켓까지, 한 번만 연동하면 돼요.</div>
+  </div>
+  <div class="actions">
+    <button class="btn btn-secondary">알아볼게요</button>
+    <button class="btn btn-primary">연동할래요</button>
+  </div>
+</div>
+<p class="memo"><span class="warn">주의</span> '팔아볼까요'가 판매 보장처럼 읽힐 수 있음. 임팩트는 최대.</p>
+
+<!-- ============================================ -->
+<div class="section-title">디자인 구조 대안 (V1과 조합 가능)</div>
+
+<h2><span class="label v6">V6</span>구조 대안 — 버튼 1개 + 본문 텍스트 링크</h2>
+<div class="banner">
+  <div class="icon">🏪</div>
+  <div class="content">
+    <div class="title">이 상품, 쿠팡·네이버에도 같이 올려볼까요?</div>
+    <div class="desc">
+      한 번 연동해두면 국내외 마켓 최대 19곳에 자동으로 등록돼요.
+      <a href="#" style="color:#2b6cff; font-weight:600; text-decoration:none; margin-left:4px;">자세히 알아보기 ›</a>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn btn-primary">연동할래요</button>
+  </div>
+</div>
+<p class="memo">버튼 2개가 부담스러울 때. 공간 절약 + 위계 명확.</p>
+
+<!-- ============================================ -->
+<div class="section-title" style="color:#2e7d32;">✓ 동작 (공통)</div>
+<p class="memo" style="font-size:13px;">
+  • <b>연동할래요</b> (Primary) → QR 코드 모달 (기존 G2G와 동일)<br>
+  • <b>알아볼게요</b> (Secondary) → <a href="https://docs.channel.io/cafe24pro/ko/articles/마켓-서비스-471c4465" target="_blank">헬프센터 '마켓 서비스' 아티클</a>
+</p>
+
+</body>
+</html>
