@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FULLAUTO-10162 | 이용현황 TO-BE 스케치 v8 (AS-IS 패턴 반영)</title>
+<style>
+  /* ===== CDS Design Tokens ===== */
+  :root {
+    --cds-color-border-primary: #e5e7eb;
+    --cds-color-bg-primary: #ffffff;
+    --cds-color-bg-secondary: #f8fafc;
+    --cds-color-bg-page: #f8fafc;
+    --cds-color-text-primary: #1f2937;
+    --cds-color-text-secondary: #6b7280;
+    --cds-color-text-tertiary: #9ca3af;
+    --cds-color-primary: #084FFF;
+    --cds-color-success: #22c55e;
+    --cds-color-warning: #f59e0b;
+    --cds-color-error: #ef4444;
+    --cds-border-radius-lg: 8px;
+    --cds-border-radius-xl: 12px;
+    --cds-border-radius-full: 9999px;
+    --cds-font-family: -apple-system, 'Pretendard', 'Noto Sans KR', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--cds-font-family); background: var(--cds-color-bg-page); color: var(--cds-color-text-primary); font-size: 14px; line-height: 1.6; }
+  .layout { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar { width: 220px; background: #1e293b; color: #fff; flex-shrink: 0; }
+  .sidebar-header { padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .sidebar-header .logo { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+  .sidebar-back { padding: 12px 16px; font-size: 13px; color: var(--cds-color-text-tertiary); cursor: pointer; }
+  .sidebar-menu { padding: 8px 0; }
+  .sidebar-item { padding: 10px 20px; font-size: 13px; color: #94a3b8; cursor: pointer; transition: all 0.15s; }
+  .sidebar-item:hover { background: rgba(255,255,255,0.05); color: #e2e8f0; }
+  .sidebar-item.active { background: var(--cds-color-primary); color: #fff; font-weight: 600; }
+
+  .main { flex: 1; padding: 32px 40px; max-width: 1200px; }
+
+  /* PageHeader (CDS) */
+  .page-header { margin-bottom: 24px; }
+  .page-title { font-size: 22px; font-weight: 700; color: var(--cds-color-text-primary); letter-spacing: -0.3px; }
+
+  /* Tab (CDS) */
+  .tab-nav { display: flex; margin-bottom: 24px; border-bottom: 1px solid var(--cds-color-border-primary); }
+  .tab-item { padding: 10px 20px; font-size: 14px; font-weight: 500; color: var(--cds-color-text-secondary); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+  .tab-item:hover { color: var(--cds-color-text-primary); }
+  .tab-item.active { color: var(--cds-color-primary); border-bottom-color: var(--cds-color-primary); font-weight: 600; }
+
+  /* DataCard (CDS) - border #f1f5f9, radius 12px, NO shadow */
+  .data-card { background: var(--cds-color-bg-primary); border: 1px solid var(--cds-color-border-primary); border-radius: var(--cds-border-radius-xl); padding: 24px; margin-bottom: 20px; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .card-title { font-size: 17px; font-weight: 700; color: var(--cds-color-text-primary); display: flex; align-items: center; gap: 6px; }
+  .card-title-sub { font-weight: 400; color: var(--cds-color-text-secondary); font-size: 14px; }
+  .help-icon { width: 16px; height: 16px; border-radius: 50%; border: 1px solid #cbd5e1; color: var(--cds-color-text-tertiary); font-size: 10px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+  .help-tooltip { display: none; position: absolute; top: 24px; left: 50%; transform: translateX(-50%); width: 320px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 50; font-size: 13px; color: var(--cds-color-text-primary); line-height: 1.8; font-weight: 400; }
+  .help-tooltip.show { display: block; }
+  .help-tooltip-close { position: absolute; top: 8px; right: 10px; border: none; background: none; font-size: 14px; color: var(--cds-color-text-tertiary); cursor: pointer; }
+  .help-tooltip a { color: var(--cds-color-primary); text-decoration: none; font-weight: 500; }
+  .help-tooltip a:hover { text-decoration: underline; }
+  .card-actions { display: flex; gap: 4px; }
+
+  /* Button (CDS) */
+  .cds-btn { padding: 9px 18px; border-radius: var(--cds-border-radius-lg); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid #d1d5db; background: var(--cds-color-bg-primary); color: var(--cds-color-text-primary); transition: all 0.15s; font-family: var(--cds-font-family); }
+  .cds-btn:hover { background: var(--cds-color-bg-secondary); border-color: #9ca3af; }
+  .cds-btn-sm { padding: 4px 10px; font-size: 12px; }
+  .cds-btn-cta { background: var(--cds-color-primary); color: #fff; border-color: var(--cds-color-primary); }
+  .cds-btn-cta:hover { background: #1950E9; }
+  .cds-btn-guide { padding: 7px 16px; font-size: 13px; border-radius: 6px; background: var(--cds-color-primary); color: #fff; border: 1px solid var(--cds-color-primary); cursor: pointer; font-weight: 500; font-family: var(--cds-font-family); transition: all 0.15s; }
+  .cds-btn-guide:hover { background: #1950E9; }
+
+  /* Chip (CDS) */
+  .cds-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: var(--cds-border-radius-full); font-size: 12px; font-weight: 500; }
+  .cds-chip-success { background: #f0fdf4; color: #15803d; }
+  .cds-chip-warning { background: #fffbeb; color: #b45309; }
+  .cds-chip-error { background: #fef2f2; color: #dc2626; }
+
+  /* Top row */
+  .top-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+  /* Shop item */
+  .shop-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border: 1px solid var(--cds-color-border-primary); border-radius: var(--cds-border-radius-lg); margin-bottom: 8px; }
+  .shop-info { display: flex; align-items: center; gap: 10px; }
+  .shop-icon { width: 24px; height: 24px; background: #e2e8f0; border-radius: 4px; }
+  .shop-name { font-size: 14px; font-weight: 600; }
+  .shop-badge { font-size: 11px; color: var(--cds-color-primary); font-weight: 600; background: #e8f0fe; padding: 2px 8px; border-radius: 4px; }
+  .shop-status { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--cds-color-text-secondary); }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .status-dot.active { background: var(--cds-color-success); }
+  .status-dot.waiting { background: var(--cds-color-error); }
+
+  /* Market Chips (CDS aligned) */
+  .market-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0; }
+  .market-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--cds-border-radius-full); border: 1px solid var(--cds-color-border-primary); font-size: 13px; color: var(--cds-color-text-primary); background: var(--cds-color-bg-primary); transition: all 0.15s; }
+  .market-chip.needs-setup { border-color: #dc2626; }
+  .chip-issue { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; background: #dc2626; color: #fff; font-size: 10px; font-weight: 800; flex-shrink: 0; line-height: 1; }
+  .market-chip .chip-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .market-chip .chip-icon.two-char { width: 26px; height: 26px; font-size: 9px; letter-spacing: -0.5px; }
+  .chip-needs-badge { font-size: 10px; font-weight: 600; color: #fff; background: var(--cds-color-warning); padding: 1px 6px; border-radius: var(--cds-border-radius-full); }
+
+  /* 칩 더보기 */
+  .chip-more { font-size: 13px; color: var(--cds-color-text-tertiary); cursor: pointer; display: inline-flex; align-items: center; padding: 6px 8px; }
+  .chip-more:hover { color: var(--cds-color-text-secondary); }
+
+  /* 경고 영역 */
+  .alert-box-wrap { margin-top: 16px; border: 1px solid #fef08a; border-radius: var(--cds-border-radius-lg); overflow: hidden; }
+  .alert-header { padding: 14px 20px; background: #b45309; }
+  .alert-header-left { display: flex; align-items: center; gap: 8px; }
+  .alert-header-icon { width: 20px; height: 20px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #b45309; flex-shrink: 0; }
+  .alert-header-text { font-size: 14px; font-weight: 600; color: #fff; }
+  .alert-header-sub { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 4px; }
+
+  /* CTA 버튼 분리 스타일 */
+  .market-alert-cta { display: flex; gap: 4px; margin-top: 8px; align-items: center; }
+  .cds-btn-outline { padding: 7px 16px; font-size: 13px; border-radius: 6px; background: var(--cds-color-bg-primary); color: var(--cds-color-primary); border: 1px solid var(--cds-color-primary); cursor: pointer; font-weight: 500; font-family: var(--cds-font-family); transition: all 0.15s; }
+  .cds-btn-outline:hover { background: #e8f0fe; }
+  .market-fold { font-size: 13px; color: var(--cds-color-text-tertiary); padding: 6px 0; cursor: pointer; }
+  .promo-link { color: var(--cds-color-primary); font-size: 13px; cursor: pointer; white-space: nowrap; }
+  .promo-link:hover { text-decoration: underline; }
+
+  /* 프로모션 펼침 영역 */
+  .promo-expand { margin-top: 10px; padding: 16px 20px; background: #f8fafc; border-radius: var(--cds-border-radius-lg); border: 1px solid var(--cds-color-border-primary); }
+  .promo-expand-desc { font-size: 13px; color: var(--cds-color-text-secondary); line-height: 1.7; margin-bottom: 12px; }
+  .promo-expand-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .promo-expand-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--cds-border-radius-full); border: 1px solid var(--cds-color-border-primary); font-size: 13px; color: var(--cds-color-text-primary); background: #fff; }
+  .promo-expand-chip .chip-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0; }
+
+  /* Guide link under chips */
+  .chip-guide-link { display: flex; align-items: center; gap: 4px; padding: 10px 0 0 0; font-size: 13px; color: #b45309; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .chip-guide-link:hover { color: #ca8a04; }
+
+  /* Alert box (CDS warning pattern) */
+  .market-alert-box { background: #fff; border: none; padding: 16px 20px 20px; margin-top: 0; }
+  .market-alert-title { font-size: 14px; font-weight: 600; color: #ca8a04; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+  .market-alert-entry { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #f3f4f6; }
+  .market-alert-entry:last-of-type { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .market-alert-name { font-size: 14px; font-weight: 700; color: var(--cds-color-text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .market-alert-name .waiting-days { font-size: 12px; font-weight: 500; color: var(--cds-color-text-tertiary); }
+  .status-blocked { font-size: 11px; font-weight: 600; color: #dc2626; background: #fee2e2; padding: 2px 8px; border-radius: 4px; }
+  .market-alert-desc { font-size: 14px; color: var(--cds-color-text-secondary); padding-left: 2px; line-height: 1.8; }
+  .market-alert-desc a { color: var(--cds-color-primary); text-decoration: none; font-weight: 500; }
+  .market-alert-desc a:hover { text-decoration: underline; }
+  .market-alert-actions { margin-top: 8px; }
+
+  /* 체크리스트 UI */
+  .alert-checklist { margin-top: 8px; padding: 10px 14px; background: #f9fafb; border-radius: 6px; }
+  .alert-checklist-item { display: flex; align-items: flex-start; gap: 8px; padding: 4px 0; font-size: 13px; color: var(--cds-color-text-primary); }
+  .alert-checklist-num { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; border-radius: 50%; background: var(--cds-color-text-secondary); color: #fff; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  /* Addon */
+  .addon-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--cds-color-border-primary); }
+  .addon-item:last-child { border-bottom: none; }
+  .addon-name { font-size: 14px; color: var(--cds-color-text-primary); }
+  .addon-status { font-size: 13px; color: var(--cds-color-text-secondary); display: flex; align-items: center; gap: 8px; }
+
+  /* Placeholder */
+  .placeholder { background: var(--cds-color-bg-secondary); border: 1px dashed #e2e8f0; border-radius: var(--cds-border-radius-xl); padding: 24px; margin-bottom: 20px; }
+  .placeholder .card-title { color: var(--cds-color-text-tertiary); }
+
+  /* Annotation */
+  .annotation { margin-top: 32px; padding: 20px; background: #fffbeb; border: 1px solid #fef08a; border-radius: var(--cds-border-radius-xl); }
+  .annotation-title { font-size: 14px; font-weight: 700; color: #ca8a04; margin-bottom: 12px; }
+  .annotation-list { list-style: none; }
+  .annotation-list li { padding: 5px 0; font-size: 13px; color: #ca8a04; display: flex; align-items: flex-start; gap: 8px; }
+  .annotation-num { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; border-radius: 50%; background: var(--cds-color-warning); color: #fff; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+  /* Spec banner */
+  .spec-banner { background: #e8f0fe; border: 1px solid #b3cffe; border-radius: var(--cds-border-radius-xl); padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 10px; }
+  .spec-banner .icon { font-size: 14px; color: var(--cds-color-primary); flex-shrink: 0; margin-top: 2px; font-weight: 700; }
+  .spec-banner .text { font-size: 13px; color: #084FFF; line-height: 1.7; }
+  .spec-banner .text strong { color: #0033CC; }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.4); z-index: 100; justify-content: center; align-items: center; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: var(--cds-color-bg-primary); border-radius: var(--cds-border-radius-xl); width: 560px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--cds-color-border-primary); }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--cds-color-border-primary); position: sticky; top: 0; background: var(--cds-color-bg-primary); z-index: 1; }
+  .modal-header h3 { font-size: 16px; font-weight: 700; }
+  .modal-close { width: 28px; height: 28px; border: none; background: none; font-size: 16px; cursor: pointer; color: var(--cds-color-text-tertiary); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .modal-close:hover { background: var(--cds-color-bg-secondary); color: var(--cds-color-text-primary); }
+  .modal-body { padding: 20px 24px; }
+  .modal-count { font-size: 14px; color: var(--cds-color-text-secondary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .modal-count .total { color: var(--cds-color-text-primary); font-weight: 700; }
+  .modal-section-label { font-size: 13px; font-weight: 600; color: var(--cds-color-text-primary); margin: 16px 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--cds-color-border-primary); display: flex; align-items: center; gap: 6px; }
+  .modal-section-label .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .modal-section-label .dot.green { background: var(--cds-color-success); }
+  .modal-section-label .dot.yellow { background: var(--cds-color-warning); }
+  .modal-item { border: 1px solid var(--cds-color-border-primary); border-radius: var(--cds-border-radius-lg); padding: 14px 16px; margin-bottom: 10px; }
+  .modal-item.needs { border-color: #fecaca; background: #fef2f2; }
+  .modal-item-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .modal-item-info { display: flex; align-items: center; gap: 10px; }
+  .modal-item-right { text-align: right; }
+  .modal-status { font-size: 12px; font-weight: 600; }
+  .modal-status.ok { color: var(--cds-color-success); }
+  .modal-status.needs { color: #b45309; }
+  .modal-date { font-size: 11px; color: var(--cds-color-text-tertiary); margin-top: 2px; }
+  .modal-shop { font-size: 12px; color: var(--cds-color-text-secondary); margin-top: 4px; margin-left: 32px; }
+  .modal-inline-guide { margin-top: 10px; margin-left: 32px; padding: 12px 14px; background: #fef3c7; border-radius: var(--cds-border-radius-lg); font-size: 13px; color: #ca8a04; line-height: 1.8; }
+  .modal-inline-guide .path { color: var(--cds-color-text-tertiary); font-size: 11px; margin-top: 4px; }
+  .modal-guide-btn { margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-header"><div class="logo">cafe24</div></div>
+    <div class="sidebar-back">< 카페24 PRO</div>
+    <div class="sidebar-menu">
+      <div class="sidebar-item active">이용 현황</div>
+      <div class="sidebar-item">작업 현황</div>
+      <div class="sidebar-item">프로모션 제안</div>
+      <div class="sidebar-item">카페24 애널리틱스</div>
+      <div class="sidebar-item">물류 진단</div>
+      <div class="sidebar-item">정산관리</div>
+      <div class="sidebar-item">업무 요청</div>
+      <div class="sidebar-item">캘린더</div>
+      <div class="sidebar-item">SNS 운영</div>
+      <div class="sidebar-item">PRO 마케팅</div>
+      <div class="sidebar-item">설정</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page-header"><div class="page-title">이용 현황</div></div>
+
+    <div class="spec-banner">
+      <span class="icon">i</span>
+      <div class="text">
+        <strong>FULLAUTO-10162 | 이용현황 TO-BE v8 (AS-IS 패턴 반영)</strong><br>
+        v8: AS-IS 인터랙션 패턴 반영 - 디폴트 5개 칩 + 외 N개 더보기, 경고 요약 바(접힘) + 자세히 보기 펼침, 독립 토글<br>
+        관련 JIRA: FULLAUTO-10162, 9770, 1705, 9784
+      </div>
+    </div>
+
+    <div class="tab-nav">
+      <div class="tab-item active" onclick="showTab('tobe')">TO-BE (개선안)</div>
+      <div class="tab-item" onclick="showTab('asis')">AS-IS (현재)</div>
+    </div>
+
+    <!-- ============ TO-BE ============ -->
+    <div id="tab-tobe">
+      <div class="top-row">
+        <div class="data-card">
+          <div class="card-header">
+            <div class="card-title">이용 쇼핑몰 <span class="help-icon">?</span></div>
+            <button class="cds-btn cds-btn-sm">+ 쇼핑몰 추가</button>
+          </div>
+          <div class="shop-item">
+            <div class="shop-info"><div class="shop-icon"></div><div><div class="shop-name">한국어 쇼핑몰 (shop1)</div><div class="shop-badge">카페24 PRO</div></div></div>
+            <div class="shop-status"><span class="status-dot active"></span> 이용중 <span style="margin-left:8px;font-size:12px;">서비스 시작일 : 2025-02-18</span></div>
+          </div>
+          <div class="shop-item">
+            <div class="shop-info"><div class="shop-icon"></div><div><div class="shop-name">test1111한국 (shop5)</div><div class="shop-badge">카페24 PRO</div></div></div>
+            <div class="shop-status"><span class="status-dot active"></span> 이용중 <span style="margin-left:8px;font-size:12px;">서비스 시작일 : 2025-02-18</span></div>
+          </div>
+          <div class="shop-item">
+            <div class="shop-info"><div class="shop-icon" style="background:#34d399;"></div><div><div class="shop-name">링크드 PRO [영어] #1 (shop6)</div><div class="shop-badge">카페24 PRO</div></div></div>
+            <div class="shop-status"><span class="status-dot waiting"></span> <span style="color:var(--cds-color-error);">이용대기</span> <span style="margin-left:8px;font-size:12px;">서비스 신청일 : 2025-07-28</span></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="data-card">
+            <div class="card-header">
+              <div class="card-title">상품 등록 요청 <span class="help-icon">?</span></div>
+              <div class="card-actions"><button class="cds-btn cds-btn-sm">등록 현황</button> <button class="cds-btn cds-btn-sm">+ 등록 요청</button></div>
+            </div>
+            <div style="font-size:14px;">요청 현황 14건</div>
+          </div>
+          <div class="data-card">
+            <div class="card-title" style="margin-bottom:16px;">부가서비스 <span class="help-icon">?</span></div>
+            <div class="addon-item"><div class="addon-name">PRO 마케팅</div><div class="addon-status"><span>미신청</span> <button class="cds-btn cds-btn-sm">신청하기</button></div></div>
+            <div class="addon-item"><div class="addon-name">브랜드앱</div><div class="addon-status" style="font-size:12px;">앱 개발비 0원, 등록비도 지원</div></div>
+            <div style="display:flex;gap:24px;padding:8px 0 0 0;">
+              <div class="addon-status"><span>iOS</span> <span>미신청</span> <button class="cds-btn cds-btn-sm">앱 만들기</button></div>
+              <div class="addon-status"><span>Android</span> <span>미신청</span> <button class="cds-btn cds-btn-sm">앱 만들기</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== 마켓 섹션 ====== -->
+      <div class="data-card">
+        <div class="card-header">
+          <div class="card-title">마켓 <span class="card-title-sub">11개 | 이용중 6</span> <span class="help-icon" onclick="toggleHelp(event, 'marketHelp')">?
+            <div class="help-tooltip" id="marketHelp">
+              <button class="help-tooltip-close" onclick="toggleHelp(event, 'marketHelp')">&#10005;</button>
+              - PRO 앱에서 마켓 운영대행을 신청하면 다양한 마켓플레이스 운영 관리를 지원해요.<br>
+              - 카페24 매니저가 마켓 내 부운영자로 등록될 수 있으며, 계정 정보는 PRO 앱에서 확인할 수 있어요.<br>
+              - 더 자세한 정보는 <a href="#">마켓 운영대행 안내</a> 가이드를 확인해 주세요.
+            </div>
+          </span></div>
+          <div class="card-actions">
+            <button class="cds-btn" onclick="openModal()">연결 현황</button>
+            <button class="cds-btn">+ 마켓 연결</button>
+          </div>
+        </div>
+
+        <!-- 디폴트: 5개 칩 + 외 N개 더보기 (AS-IS 패턴 유지) -->
+        <div class="market-chips" id="chipsDefault">
+          <div class="market-chip"><span class="chip-icon" style="background:#03c75a;">N</span> 스마트스토어</div>
+          <div class="market-chip"><span class="chip-icon" style="background:#e44232;">C</span> 쿠팡</div>
+          <div class="market-chip needs-setup"><span class="chip-icon" style="background:#2db400;">G</span> G마켓 <span class="chip-issue">!</span></div>
+          <div class="market-chip"><span class="chip-icon" style="background:#e44232;">A</span> 옥션</div>
+          <div class="market-chip needs-setup"><span class="chip-icon two-char" style="background:#ff6900;">11</span> 11번가 <span class="chip-issue">!</span></div>
+          <span class="chip-more" onclick="toggleChips()">... 외 6개 더보기</span>
+          <span class="promo-link" style="margin-left:auto;" onclick="togglePromo('promoDefault')">연결 가능한 마켓 3개 더 있어요 <span id="promoDefaultArrow">&#9660;</span></span>
+        </div>
+        <div class="promo-expand" id="promoDefault" style="display:none;">
+          <div class="promo-expand-desc">판매채널이 늘어나면 주문도 늘어나요. 연결만 하면 상품이 자동으로 등록되니까 부담도 없어요.</div>
+          <div class="promo-expand-chips">
+            <div class="promo-expand-chip"><span class="chip-icon" style="background:#ff2a60;">S</span> SSG</div>
+            <div class="promo-expand-chip"><span class="chip-icon" style="background:#e44232;">Q</span> 퀸잇</div>
+            <div class="promo-expand-chip"><span class="chip-icon" style="background:#ff6b00;">S</span> 쇼피글로벌</div>
+          </div>
+        </div>
+        <!-- 펼침: 전체 칩 -->
+        <div id="chipsAll" style="display:none;">
+          <div class="market-chips">
+            <div class="market-chip"><span class="chip-icon" style="background:#03c75a;">N</span> 스마트스토어</div>
+            <div class="market-chip"><span class="chip-icon" style="background:#e44232;">C</span> 쿠팡</div>
+            <div class="market-chip needs-setup"><span class="chip-icon" style="background:#2db400;">G</span> G마켓 <span class="chip-issue">!</span></div>
+            <div class="market-chip"><span class="chip-icon" style="background:#e44232;">A</span> 옥션</div>
+            <div class="market-chip needs-setup"><span class="chip-icon two-char" style="background:#ff6900;">11</span> 11번가 <span class="chip-issue">!</span></div>
+            <div class="market-chip"><span class="chip-icon" style="background:#fee500;color:#1a1a1a;">K</span> 카카오톡 선물하기</div>
+            <div class="market-chip"><span class="chip-icon" style="background:#1a1a1a;">A</span> 에이블리</div>
+            <div class="market-chip"><span class="chip-icon" style="background:#e44232;">R</span> 라쿠텐</div>
+          </div>
+          <div class="market-chips">
+            <div class="market-chip needs-setup"><span class="chip-icon two-char" style="background:#e30613;">ON</span> 롯데ON <span class="chip-issue">!</span></div>
+            <div class="market-chip"><span class="chip-icon" style="background:#ff2a60;">S</span> SSG</div>
+            <div class="market-chip"><span class="chip-icon" style="background:#1a1a1a;">M</span> 무신사</div>
+            <span class="chip-more" onclick="toggleChips()">... 접기</span>
+            <span class="promo-link" style="margin-left:auto;" onclick="togglePromo('promoExpanded')">연결 가능한 마켓 3개 더 있어요 <span id="promoExpandedArrow">&#9660;</span></span>
+          </div>
+          <div class="promo-expand" id="promoExpanded" style="display:none;">
+            <div class="promo-expand-desc">판매채널이 늘어나면 주문도 늘어나요. 연결만 하면 상품이 자동으로 등록되니까 부담도 없어요.</div>
+            <div class="promo-expand-chips">
+              <div class="promo-expand-chip"><span class="chip-icon" style="background:#ff2a60;">S</span> SSG</div>
+              <div class="promo-expand-chip"><span class="chip-icon" style="background:#e44232;">Q</span> 퀸잇</div>
+              <div class="promo-expand-chip"><span class="chip-icon" style="background:#ff6b00;">S</span> 쇼피글로벌</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 경고 영역 -->
+        <div class="alert-box-wrap">
+          <!-- 헤더: 문제 인지 1회 -->
+          <div class="alert-header">
+            <div class="alert-header-left">
+              <span class="alert-header-icon">!</span>
+              <span class="alert-header-text">마켓 3개에서 상품을 판매할 수 없어요</span>
+            </div>
+            <div class="alert-header-sub">설정을 완료하면 바로 상품 전송이 시작돼요</div>
+          </div>
+
+          <!-- 항목: 행동 유도 (간결) -->
+          <div class="market-alert-box">
+            <div class="market-alert-entry">
+              <div class="market-alert-name">G마켓 <span class="waiting-days">신청일 2025-11-27</span></div>
+              <div class="market-alert-desc">판매자센터에서 카페24 프로 운영팀의 부운영자 권한을 승인해 주세요.</div>
+              <div class="market-alert-cta">
+                <button class="cds-btn-guide">설정 방법 보기</button>
+                <button class="cds-btn-outline">판매자센터로 이동 &#8250;</button>
+              </div>
+            </div>
+
+            <div class="market-alert-entry">
+              <div class="market-alert-name">롯데ON <span class="waiting-days">신청일 2026-02-28</span></div>
+              <div class="market-alert-desc">판매자센터에서 배송정보와 기본 설정을 등록해 주세요.</div>
+              <div class="market-alert-cta">
+                <button class="cds-btn-guide">설정 방법 보기</button>
+                <button class="cds-btn-outline">판매자센터로 이동 &#8250;</button>
+              </div>
+            </div>
+
+            <div class="market-alert-entry">
+              <div class="market-alert-name">11번가 <span class="waiting-days">신청일 2025-11-27</span></div>
+              <div class="market-alert-desc">&#9312; 부운영자 권한을 승인해 주세요<br>&#9313; 기본 설정을 등록해 주세요</div>
+              <div class="market-alert-cta">
+                <button class="cds-btn-guide">설정 방법 보기</button>
+                <button class="cds-btn-outline">판매자센터로 이동 &#8250;</button>
+              </div>
+            </div>
+
+            <div style="font-size:12px; color:var(--cds-color-text-tertiary); margin-top:4px;">
+              설정 완료 후 반영까지 최대 3시간 걸릴 수 있어요.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="placeholder"><div class="card-title">[기존 유지] 추천 서비스</div></div>
+
+      <!-- ====== 프로모션 대안 비교 ====== -->
+      <div style="margin-top:32px; padding:24px; background:#fff; border:2px solid #b3cffe; border-radius:12px;">
+        <div style="font-size:15px; font-weight:700; color:#084FFF; margin-bottom:6px;">프로모션 영역 대안 비교 (리뷰용)</div>
+        <div style="font-size:13px; color:#64748b; margin-bottom:20px;">* 아래 3가지 안은 <strong>"설정 필요 마켓이 없을 때"</strong> 기준 시안입니다. 설정 필요 마켓이 있으면 프로모션 숨김.</div>
+
+        <!-- A안: 카드 하단 인라인 -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:14px; font-weight:700; color:#084FFF; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+            <span style="background:#084FFF; color:#fff; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;">A</span>
+            카드 하단 인라인
+            <span style="font-size:11px; font-weight:500; color:#fff; background:#22c55e; padding:2px 8px; border-radius:4px;">추천</span>
+          </div>
+          <div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; overflow:hidden;">
+            <!-- 마켓 카드 상단 (축약) -->
+            <div style="padding:20px 24px 12px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <div style="font-size:17px; font-weight:700;">마켓 <span style="font-weight:400; color:#64748b; font-size:14px;">마켓 11개 | 이용중 11</span></div>
+                <div style="display:flex; gap:8px;">
+                  <button style="padding:9px 18px; border-radius:8px; font-size:14px; border:1px solid #e5e7eb; background:#fff; cursor:pointer;">연결 현황</button>
+                  <button style="padding:9px 18px; border-radius:8px; font-size:14px; border:1px solid #e5e7eb; background:#fff; cursor:pointer;">+ 마켓 연결</button>
+                </div>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px; display:inline-flex; align-items:center; gap:6px;"><span style="width:22px;height:22px;border-radius:50%;background:#03c75a;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;">N</span> 스마트스토어</span>
+                <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px; display:inline-flex; align-items:center; gap:6px;"><span style="width:22px;height:22px;border-radius:50%;background:#e44232;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;">C</span> 쿠팡</span>
+                <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px; display:inline-flex; align-items:center; gap:6px;"><span style="width:22px;height:22px;border-radius:50%;background:#2db400;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;">G</span> G마켓</span>
+                <span style="font-size:13px; color:#94a3b8; padding:6px 8px;">... 외 8개 더보기</span>
+              </div>
+            </div>
+            <!-- A안: 구분선 + 인라인 프로모션 -->
+            <div style="border-top:1px solid #f1f5f9; padding:14px 24px; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:13px; color:#64748b;">아직 연결하지 않은 마켓 3개가 있어요</span>
+              <button style="padding:5px 14px; border-radius:6px; font-size:12px; color:#6366f1; border:1px solid #6366f1; background:#fff; cursor:pointer; font-weight:500;">둘러보기 &#8250;</button>
+            </div>
+          </div>
+          <div style="margin-top:8px; font-size:12px; color:#64748b;">
+            <strong>장점:</strong> 카드 안에서 완결. 낮은 시각적 무게. AS-IS 위치와 유사<br>
+            <strong>단점:</strong> 설정 필요 마켓 있을 때 숨기면 카드 높이가 달라짐
+          </div>
+        </div>
+
+        <!-- B안: 칩 펼침 시에만 -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:14px; font-weight:700; color:#084FFF; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+            <span style="background:#084FFF; color:#fff; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;">B</span>
+            칩 펼침 시 우측 노출 (AS-IS 동일)
+          </div>
+          <div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:20px 24px;">
+            <div style="font-size:17px; font-weight:700; margin-bottom:14px;">마켓 <span style="font-weight:400; color:#64748b; font-size:14px;">마켓 11개 | 이용중 11</span></div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:6px;">
+              <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px;">N 스마트스토어</span>
+              <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px;">C 쿠팡</span>
+              <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px;">G G마켓</span>
+              <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px;">A 옥션</span>
+              <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px;">11 11번가</span>
+              <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px;">K 카카오톡 선물하기</span>
+              <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px;">A 에이블리</span>
+              <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px;">R 라쿠텐</span>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+              <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px;">ON 롯데ON</span>
+              <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px;">S SSG</span>
+              <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px;">M 무신사</span>
+              <span style="font-size:13px; color:#94a3b8; cursor:pointer; padding:6px 8px;">... 접기</span>
+              <span style="margin-left:auto; font-size:13px; color:#6366f1; cursor:pointer;">3개 마켓 더 연결하면 매출도 늘어요 &#9660;</span>
+            </div>
+          </div>
+          <div style="margin-top:8px; font-size:12px; color:#64748b;">
+            <strong>장점:</strong> AS-IS 완전 동일. 변경 비용 0. 칩 전체를 본 셀러에게만 노출<br>
+            <strong>단점:</strong> 칩을 안 펼치는 셀러에게는 노출 안 됨 (대부분)
+          </div>
+        </div>
+
+        <!-- C안: 추천 서비스 영역에 통합 -->
+        <div>
+          <div style="font-size:14px; font-weight:700; color:#084FFF; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+            <span style="background:#084FFF; color:#fff; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;">C</span>
+            추천 서비스 영역에 통합
+          </div>
+          <div style="background:#f8fafc; border:1px dashed #e2e8f0; border-radius:12px; padding:24px;">
+            <div style="font-size:17px; font-weight:700; color:#94a3b8; margin-bottom:16px;">추천 서비스</div>
+            <!-- 프로모션 카드 -->
+            <div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:20px;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <div style="font-size:15px; font-weight:600; color:#0f172a; margin-bottom:6px;">마켓을 더 연결해 보세요</div>
+                  <div style="font-size:13px; color:#64748b; line-height:1.7;">연결만 하면 상품이 자동으로 등록돼요.<br>판매 채널이 늘어나면 주문도 늘어나요.</div>
+                </div>
+                <button style="padding:9px 18px; border-radius:8px; font-size:13px; color:#fff; background:#6366f1; border:none; cursor:pointer; font-weight:500; white-space:nowrap;">마켓 추가하기</button>
+              </div>
+              <div style="display:flex; gap:10px; margin-top:14px;">
+                <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px; display:inline-flex; align-items:center; gap:6px; background:#fff;"><span style="width:22px;height:22px;border-radius:50%;background:#ff2a60;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">S</span> SSG</span>
+                <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px; display:inline-flex; align-items:center; gap:6px; background:#fff;"><span style="width:22px;height:22px;border-radius:50%;background:#e44232;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;">Q</span> 퀸잇</span>
+                <span style="padding:6px 14px; border-radius:9999px; border:1px solid #e5e7eb; font-size:13px; display:inline-flex; align-items:center; gap:6px; background:#fff;"><span style="width:22px;height:22px;border-radius:50%;background:#ff6b00;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">S</span> 쇼피글로벌</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:8px; font-size:12px; color:#64748b;">
+            <strong>장점:</strong> 마켓 카드가 깔끔. 프로모션에 충분한 설명 공간. 미연결 마켓 칩 표시 가능<br>
+            <strong>단점:</strong> 추천 서비스 영역 구조 변경 필요. 마켓 카드와 물리적 거리 멀어짐
+          </div>
+        </div>
+
+        <div style="margin-top:16px; padding-top:12px; border-top:1px solid #e2e8f0; font-size:12px; color:#94a3b8;">
+          * 모든 안 공통: 설정 필요 마켓이 있으면 프로모션 숨김. 전부 이용중일 때만 노출. "+ 마켓 연결" 버튼은 항상 존재.
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-title">설계 어노테이션</div>
+        <ul class="annotation-list">
+          <li><span class="annotation-num">1</span> <strong>카운트</strong>: "마켓 11개 | 이용중 6" (A안 적용). 상태 세분화는 모달에서만. 요약 바가 행동 안내 전담</li>
+          <li><span class="annotation-num">2</span> <strong>요약 바</strong>: "마켓 3개의 추가 설정이 필요해요" + [자세히 보기] (디폴트 접힘)</li>
+          <li><span class="annotation-num">3</span> <strong>경고 상세</strong>: A/B/A+B 3케이스. 2문장 구조(이유+행동). CTA: [설정 방법 보기] Primary + [판매자센터로 이동] Secondary</li>
+          <li><span class="annotation-num">4</span> <strong>모달</strong>: "추가 설정 필요" / "연결 확인중" / "이용중" 3섹션. 상태 라벨만(상세 안내 없음). 정렬: 섹션 순서=긴급도순, 섹션 내=조치 단계 적은 순(Quick Win). 날짜: 이용중="시작일"(운영 시작일), 그 외="신청일"(운영대행 신청일)</li>
+          <li><span class="annotation-num">5</span> <strong>칩</strong>: AS-IS 패턴(5개+더보기). 설정 필요 마켓은 빨간 border + (!) 아이콘. 모달: "추가 설정 필요" / "연결 확인중" / "이용중" 3분류</li>
+          <li><span class="annotation-num">6</span> <strong>프로모션</strong>: AS-IS 위치(칩 우측) 유지. 설정 필요 마켓 있음 = "연결 가능한 마켓 N개 더 있어요" (중립톤). 전부 이용중 = "N개 마켓 더 연결하면 매출도 늘어요" (적극톤)</li>
+          <li><span class="annotation-num">7</span> <strong>1차 범위</strong>: A.부운영자 권한 / B.마켓 기본정보 / A+B</li>
+        </ul>
+      </div>
+
+      <!-- 카운트 대안 비교 -->
+      <div style="margin-top:20px; padding:24px; background:#fff; border:2px solid #b3cffe; border-radius:12px;">
+        <div style="font-size:15px; font-weight:700; color:#084FFF; margin-bottom:16px;">카운트 문구 대안 비교 (리뷰용)</div>
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+          <thead>
+            <tr style="background:#e8f0fe;">
+              <th style="padding:10px 12px; text-align:left; border-bottom:2px solid #b3cffe; width:60px;">안</th>
+              <th style="padding:10px 12px; text-align:left; border-bottom:2px solid #b3cffe; width:300px;">카운트 문구</th>
+              <th style="padding:10px 12px; text-align:left; border-bottom:2px solid #b3cffe;">장점</th>
+              <th style="padding:10px 12px; text-align:left; border-bottom:2px solid #b3cffe;">단점</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#f0fdf4;">
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; font-weight:700; color:#084FFF;">A (적용)</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; font-weight:600;">마켓 11개 | 이용중 6</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0;">긍정적 숫자만 노출. 요약 바와 역할 분리 명확</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0;">"나머지 5개는?" 궁금증 (모달에서 해소)</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; font-weight:700;">B</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0;">마켓 11개 · 추가 설정 필요 3개</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0;">행동 필요한 것만 강조. 요약 바와 일관성</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0;">나머지 8개 상태 불명확. 요약 바와 정보 중복</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; font-weight:700;">C</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0;">총 11개 마켓 연결됨</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0;">가장 단순. AS-IS와 동일한 톤</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0;">"연결됨"이 전부 정상처럼 오해. 개선 효과 없음</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0; font-weight:700;">D</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0;">마켓 11개 | 이용중 6 · 이용대기 5</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0;">전체 현황 명확. 위키 용어 일치</td>
+              <td style="padding:10px 12px; border-bottom:1px solid #e2e8f0;">이용대기 5 vs 요약 바 3 숫자 불일치 → 혼란</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 12px; font-weight:700;">E</td>
+              <td style="padding:10px 12px;">총 11개 마켓 연결됨 | 계정 13개</td>
+              <td style="padding:10px 12px;">AS-IS 완전 동일. 셀러 학습비용 0</td>
+              <td style="padding:10px 12px;">"계정 13개"가 셀러에게 무의미. 상태 정보 없음</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top:12px; font-size:12px; color:var(--cds-color-text-tertiary);">
+          * 모든 안에서 요약 바("마켓 3개의 추가 설정이 필요해요")는 동일하게 유지됩니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ AS-IS ============ -->
+    <div id="tab-asis" style="display:none;">
+      <div class="top-row">
+        <div class="data-card">
+          <div class="card-header"><div class="card-title">이용 쇼핑몰</div></div>
+          <div class="shop-item">
+            <div class="shop-info"><div class="shop-icon"></div><div><div class="shop-name">한국어 쇼핑몰 (shop1)</div><div class="shop-badge">카페24 PRO</div></div></div>
+            <div class="shop-status"><span class="status-dot active"></span> 이용중</div>
+          </div>
+        </div>
+        <div class="data-card"><div class="card-title">상품 등록 요청 / 부가서비스</div></div>
+      </div>
+      <div class="data-card">
+        <div class="card-header">
+          <div class="card-title">마켓 <span class="card-title-sub">총 4개 마켓 연결됨 | 계정 4개</span></div>
+          <div class="card-actions"><button class="cds-btn">연결 현황</button> <button class="cds-btn">+ 마켓 연결</button></div>
+        </div>
+        <div class="market-chips">
+          <div class="market-chip"><span class="chip-icon" style="background:#03c75a;">N</span> 스마트스토어</div>
+          <div class="market-chip"><span class="chip-icon" style="background:#fee500;color:#1a1a1a;">K</span> 카카오톡 스토어</div>
+          <div class="market-chip"><span class="chip-icon" style="background:#fee500;color:#1a1a1a;">K</span> 카카오톡 선물하기</div>
+          <div class="market-chip"><span class="chip-icon" style="background:#1a1a1a;">A</span> 에이블리</div>
+        </div>
+      </div>
+      <div class="placeholder"><div class="card-title">[기존] 추천 서비스</div></div>
+      <div class="annotation">
+        <div class="annotation-title">AS-IS 문제점</div>
+        <ul class="annotation-list">
+          <li><span class="annotation-num">!</span> 신청만 완료된 마켓도 "이용중"으로 오인</li>
+          <li><span class="annotation-num">!</span> 판매 준비 필요 마켓과 이용중 마켓이 동일 칩 스타일</li>
+          <li><span class="annotation-num">!</span> "신청완료" 텍스트만 노출, 조치 안내 없음</li>
+          <li><span class="annotation-num">!</span> 모달에서도 이용중/신청완료 동일 스타일 나열</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>마켓 연결 현황</h3>
+      <button class="modal-close" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-count">
+        <span class="total">마켓 11개</span>
+        <span style="color:#cbd5e1;">|</span>
+        <span class="cds-chip cds-chip-success">이용중 6</span>
+        <span class="cds-chip cds-chip-error">추가 설정 필요 3</span>
+        <span class="cds-chip" style="background:#f3f4f6;color:#6b7280;">연결 확인중 2</span>
+      </div>
+
+      <div class="modal-section-label"><span class="dot" style="background:#dc2626;"></span> 추가 설정 필요</div>
+
+      <div class="modal-item needs">
+        <div class="modal-item-top">
+          <div class="modal-item-info"><span class="chip-icon" style="background:#2db400;width:24px;height:24px;font-size:10px;">G</span><div><div class="shop-name">G마켓 <span style="font-weight:400;color:var(--cds-color-text-secondary);">(cafe24_gmarket)</span></div></div></div>
+          <div class="modal-item-right"><div class="modal-status needs">추가 설정 필요</div><div class="modal-date">신청일: 2025-11-27</div></div>
+        </div>
+        <div class="modal-shop">한국어 쇼핑몰 (shop1)</div>
+      </div>
+
+      <div class="modal-item needs">
+        <div class="modal-item-top">
+          <div class="modal-item-info"><span class="chip-icon" style="background:#e30613;width:24px;height:24px;font-size:9px;">ON</span><div><div class="shop-name">롯데ON <span style="font-weight:400;color:var(--cds-color-text-secondary);">(cafe24_lotte)</span></div></div></div>
+          <div class="modal-item-right"><div class="modal-status needs">추가 설정 필요</div><div class="modal-date">신청일: 2026-02-28</div></div>
+        </div>
+        <div class="modal-shop">한국어 쇼핑몰 (shop1)</div>
+      </div>
+
+      <div class="modal-item needs">
+        <div class="modal-item-top">
+          <div class="modal-item-info"><span class="chip-icon" style="background:#ff6900;width:24px;height:24px;font-size:10px;">11</span><div><div class="shop-name">11번가 <span style="font-weight:400;color:var(--cds-color-text-secondary);">(cafe24_11st)</span></div></div></div>
+          <div class="modal-item-right"><div class="modal-status needs">추가 설정 필요</div><div class="modal-date">신청일: 2025-11-27</div></div>
+        </div>
+        <div class="modal-shop">한국어 쇼핑몰 (shop1)</div>
+      </div>
+
+      <div class="modal-section-label"><span class="dot" style="background:#9ca3af;"></span> 연결 확인중</div>
+
+      <div class="modal-item" style="background:#f8fafc;">
+        <div class="modal-item-top">
+          <div class="modal-item-info"><span class="chip-icon" style="background:#ff2a60;width:24px;height:24px;font-size:10px;">S</span><div><div class="shop-name">SSG <span style="font-weight:400;color:var(--cds-color-text-secondary);">(cafe24_ssg)</span></div></div></div>
+          <div class="modal-item-right"><div class="modal-status" style="color:#6b7280;">연결 확인중</div><div class="modal-date">신청일: 2026-03-14</div></div>
+        </div>
+        <div class="modal-shop">한국어 쇼핑몰 (shop1)</div>
+      </div>
+
+      <div class="modal-item" style="background:#f8fafc;">
+        <div class="modal-item-top">
+          <div class="modal-item-info"><span class="chip-icon" style="background:#1a1a1a;width:24px;height:24px;font-size:10px;">M</span><div><div class="shop-name">무신사 <span style="font-weight:400;color:var(--cds-color-text-secondary);">(cafe24_musinsa)</span></div></div></div>
+          <div class="modal-item-right"><div class="modal-status" style="color:#6b7280;">연결 확인중</div><div class="modal-date">신청일: 2026-03-14</div></div>
+        </div>
+        <div class="modal-shop">한국어 쇼핑몰 (shop1)</div>
+      </div>
+
+      <div class="modal-section-label"><span class="dot green"></span> 이용중</div>
+
+      <div class="modal-item">
+        <div class="modal-item-top">
+          <div class="modal-item-info"><span class="chip-icon" style="background:#03c75a;width:24px;height:24px;font-size:10px;">N</span><div><div class="shop-name">스마트스토어 <span style="font-weight:400;color:var(--cds-color-text-secondary);">(cafe24_store)</span></div></div></div>
+          <div class="modal-item-right"><div class="modal-status ok">&#10003; 이용중</div><div class="modal-date">시작일: 2025-02-18</div></div>
+        </div>
+        <div class="modal-shop">한국어 쇼핑몰 (shop1)</div>
+      </div>
+
+      <div class="modal-item">
+        <div class="modal-item-top">
+          <div class="modal-item-info"><span class="chip-icon" style="background:#e44232;width:24px;height:24px;font-size:10px;">C</span><div><div class="shop-name">쿠팡 <span style="font-weight:400;color:var(--cds-color-text-secondary);">(cafe24_coupang)</span></div></div></div>
+          <div class="modal-item-right"><div class="modal-status ok">&#10003; 이용중</div><div class="modal-date">시작일: 2025-02-18</div></div>
+        </div>
+        <div class="modal-shop">한국어 쇼핑몰 (shop1)</div>
+      </div>
+
+      <div class="modal-item">
+        <div class="modal-item-top">
+          <div class="modal-item-info"><span class="chip-icon" style="background:#e44232;width:24px;height:24px;font-size:10px;">A</span><div><div class="shop-name">옥션 <span style="font-weight:400;color:var(--cds-color-text-secondary);">(cafe24_auction)</span></div></div></div>
+          <div class="modal-item-right"><div class="modal-status ok">&#10003; 이용중</div><div class="modal-date">시작일: 2025-02-18</div></div>
+        </div>
+        <div class="modal-shop">한국어 쇼핑몰 (shop1)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(t) {
+  document.getElementById('tab-tobe').style.display = t === 'tobe' ? 'block' : 'none';
+  document.getElementById('tab-asis').style.display = t === 'asis' ? 'block' : 'none';
+  document.querySelectorAll('.tab-item').forEach((el, i) => {
+    el.classList.toggle('active', (t === 'tobe' && i === 0) || (t === 'asis' && i === 1));
+  });
+}
+function openModal() { document.getElementById('modalOverlay').classList.add('show'); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
+document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+function toggleChips() {
+  var def = document.getElementById('chipsDefault');
+  var all = document.getElementById('chipsAll');
+  var promoD = document.getElementById('promoDefault');
+  var promoE = document.getElementById('promoExpanded');
+  var arrowD = document.getElementById('promoDefaultArrow');
+  var arrowE = document.getElementById('promoExpandedArrow');
+  // 프로모션 리셋
+  promoD.style.display = 'none';
+  promoE.style.display = 'none';
+  arrowD.innerHTML = '&#9660;';
+  arrowE.innerHTML = '&#9660;';
+  // 칩 토글
+  if (all.style.display === 'none') {
+    def.style.display = 'none';
+    all.style.display = 'block';
+  } else {
+    all.style.display = 'none';
+    def.style.display = 'flex';
+  }
+}
+function toggleHelp(e, id) {
+  e.stopPropagation();
+  var el = document.getElementById(id);
+  el.classList.toggle('show');
+}
+document.addEventListener('click', function() {
+  document.querySelectorAll('.help-tooltip.show').forEach(function(el) { el.classList.remove('show'); });
+});
+function closeAllPromos() {
+  ['promoDefault','promoExpanded'].forEach(function(id) {
+    var el = document.getElementById(id);
+    var arrow = document.getElementById(id + 'Arrow');
+    if (el) { el.style.display = 'none'; }
+    if (arrow) { arrow.innerHTML = '&#9660;'; }
+  });
+}
+// closeAlert 제거 - 항상 펼침
+function togglePromo(id) {
+  var el = document.getElementById(id);
+  var arrow = document.getElementById(id + 'Arrow');
+  if (el.style.display === 'none') {
+    closeAllPromos();
+    el.style.display = 'block';
+    arrow.innerHTML = '&#9650;';
+  } else {
+    el.style.display = 'none';
+    arrow.innerHTML = '&#9660;';
+  }
+}
+// toggleAlert 제거 - 항상 펼침
+</script>
+
+</body>
+</html>
