@@ -106,12 +106,12 @@
   .chip-more:hover { color: var(--cds-color-text-secondary); }
 
   /* 경고 영역 */
-  .alert-box-wrap { margin-top: 16px; border: 1px solid #fef08a; border-radius: var(--cds-border-radius-lg); overflow: hidden; }
-  .alert-header { padding: 14px 20px; background: #b45309; }
+  .alert-box-wrap { margin-top: 16px; border: 1px solid #fecaca; border-radius: var(--cds-border-radius-lg); overflow: hidden; }
+  .alert-header { padding: 14px 20px; background: #fef2f2; border-bottom: 1px solid #fecaca; }
   .alert-header-left { display: flex; align-items: center; gap: 8px; }
-  .alert-header-icon { width: 20px; height: 20px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #b45309; flex-shrink: 0; }
-  .alert-header-text { font-size: 14px; font-weight: 600; color: #fff; }
-  .alert-header-sub { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 4px; }
+  .alert-header-icon { width: 20px; height: 20px; background: #dc2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0; }
+  .alert-header-text { font-size: 14px; font-weight: 600; color: #dc2626; }
+  .alert-header-sub { font-size: 13px; color: #b91c1c; margin-top: 4px; }
 
   /* CTA 버튼 분리 스타일 */
   .market-alert-cta { display: flex; gap: 4px; margin-top: 8px; align-items: center; }
@@ -347,47 +347,93 @@
           </div>
         </div>
 
-        <!-- 경고 영역 -->
+        <!-- ====== A안: 마켓별 분리 (케이스별 다른 문구) ====== -->
+        <div style="margin-bottom:8px; font-size:12px; font-weight:600; color:#084FFF; background:#e8f0fe; display:inline-block; padding:2px 10px; border-radius:4px;">A안: 마켓별 분리</div>
         <div class="alert-box-wrap">
-          <!-- 헤더: 문제 인지 1회 -->
           <div class="alert-header">
             <div class="alert-header-left">
               <span class="alert-header-icon">!</span>
-              <span class="alert-header-text">마켓 3개에서 상품을 판매할 수 없어요</span>
+              <span class="alert-header-text">마켓 3개에서 아직 상품을 팔 수 없어요</span>
             </div>
-            <div class="alert-header-sub">설정을 완료하면 바로 상품 전송이 시작돼요</div>
           </div>
-
-          <!-- 항목: 행동 유도 (간결) -->
           <div class="market-alert-box">
             <div class="market-alert-entry">
               <div class="market-alert-name">G마켓 <span class="waiting-days">신청일 2025-11-27</span></div>
-              <div class="market-alert-desc">판매자센터에서 카페24 프로 운영팀의 부운영자 권한을 승인해 주세요.</div>
+              <div class="market-alert-desc">서브 계정을 발급해 주세요.</div>
               <div class="market-alert-cta">
                 <button class="cds-btn-guide">설정 방법 보기</button>
                 <button class="cds-btn-outline">판매자센터로 이동 &#8250;</button>
               </div>
             </div>
-
             <div class="market-alert-entry">
               <div class="market-alert-name">롯데ON <span class="waiting-days">신청일 2026-02-28</span></div>
-              <div class="market-alert-desc">판매자센터에서 배송정보와 기본 설정을 등록해 주세요.</div>
+              <div class="market-alert-desc">마켓 기본 정보를 등록해 주세요.</div>
               <div class="market-alert-cta">
                 <button class="cds-btn-guide">설정 방법 보기</button>
                 <button class="cds-btn-outline">판매자센터로 이동 &#8250;</button>
               </div>
             </div>
-
             <div class="market-alert-entry">
               <div class="market-alert-name">11번가 <span class="waiting-days">신청일 2025-11-27</span></div>
-              <div class="market-alert-desc">&#9312; 부운영자 권한을 승인해 주세요<br>&#9313; 기본 설정을 등록해 주세요</div>
+              <div class="market-alert-desc">서브 계정 발급과 기본 정보 등록이 필요해요.</div>
               <div class="market-alert-cta">
                 <button class="cds-btn-guide">설정 방법 보기</button>
                 <button class="cds-btn-outline">판매자센터로 이동 &#8250;</button>
               </div>
             </div>
-
             <div style="font-size:12px; color:var(--cds-color-text-tertiary); margin-top:4px;">
+              설정 완료 후 반영까지 최대 3시간 걸릴 수 있어요.
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== B안: 하나로 합침 ====== -->
+        <div style="margin-top:24px; margin-bottom:8px; font-size:12px; font-weight:600; color:#059669; background:#f0fdf4; display:inline-block; padding:2px 10px; border-radius:4px;">B안: 하나로 합침</div>
+        <div class="alert-box-wrap">
+          <div class="alert-header">
+            <div class="alert-header-left">
+              <span class="alert-header-icon">!</span>
+              <span class="alert-header-text">마켓 3개에서 아직 상품을 팔 수 없어요</span>
+            </div>
+          </div>
+          <div class="market-alert-box">
+            <div style="font-size:14px; color:var(--cds-color-text-secondary); margin-bottom:14px;">판매자센터에서 추가 설정이 필요해요.</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border:1px solid var(--cds-color-border-primary); border-radius:var(--cds-border-radius-lg);">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="chip-icon" style="background:#2db400; width:22px; height:22px; font-size:10px;">G</span>
+                  <span style="font-size:14px; font-weight:600;">G마켓</span>
+                  <span style="font-size:12px; color:var(--cds-color-text-tertiary);">신청일 2025-11-27</span>
+                </div>
+                <div style="display:flex; gap:4px;">
+                  <button class="cds-btn-guide">설정 방법 보기</button>
+                  <button class="cds-btn-outline">판매자센터 &#8250;</button>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border:1px solid var(--cds-color-border-primary); border-radius:var(--cds-border-radius-lg);">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="chip-icon" style="background:#e30613; width:22px; height:22px; font-size:9px;">ON</span>
+                  <span style="font-size:14px; font-weight:600;">롯데ON</span>
+                  <span style="font-size:12px; color:var(--cds-color-text-tertiary);">신청일 2026-02-28</span>
+                </div>
+                <div style="display:flex; gap:4px;">
+                  <button class="cds-btn-guide">설정 방법 보기</button>
+                  <button class="cds-btn-outline">판매자센터 &#8250;</button>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border:1px solid var(--cds-color-border-primary); border-radius:var(--cds-border-radius-lg);">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="chip-icon" style="background:#ff6900; width:22px; height:22px; font-size:10px;">11</span>
+                  <span style="font-size:14px; font-weight:600;">11번가</span>
+                  <span style="font-size:12px; color:var(--cds-color-text-tertiary);">신청일 2025-11-27</span>
+                </div>
+                <div style="display:flex; gap:4px;">
+                  <button class="cds-btn-guide">설정 방법 보기</button>
+                  <button class="cds-btn-outline">판매자센터 &#8250;</button>
+                </div>
+              </div>
+            </div>
+            <div style="font-size:12px; color:var(--cds-color-text-tertiary); margin-top:10px;">
               설정 완료 후 반영까지 최대 3시간 걸릴 수 있어요.
             </div>
           </div>
@@ -396,9 +442,9 @@
 
       <div class="placeholder"><div class="card-title">[기존 유지] 추천 서비스</div></div>
 
-      <!-- ====== 프로모션 대안 비교 ====== -->
-      <div style="margin-top:32px; padding:24px; background:#fff; border:2px solid #b3cffe; border-radius:12px;">
-        <div style="font-size:15px; font-weight:700; color:#084FFF; margin-bottom:6px;">프로모션 영역 대안 비교 (리뷰용)</div>
+      <!-- 프로모션 대안 비교 삭제됨 -->
+      <div style="display:none;">
+        <div></div>
         <div style="font-size:13px; color:#64748b; margin-bottom:20px;">* 아래 3가지 안은 <strong>"설정 필요 마켓이 없을 때"</strong> 기준 시안입니다. 설정 필요 마켓이 있으면 프로모션 숨김.</div>
 
         <!-- A안: 카드 하단 인라인 -->
