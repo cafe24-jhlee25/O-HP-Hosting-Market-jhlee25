@@ -114,7 +114,7 @@
   .alert-header-sub { font-size: 13px; color: #b91c1c; margin-top: 4px; }
 
   /* CTA 버튼 분리 스타일 */
-  .market-alert-cta { display: flex; gap: 4px; margin-top: 8px; align-items: center; }
+  .market-alert-cta { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
   .cds-btn-outline { padding: 7px 16px; font-size: 13px; border-radius: 6px; background: var(--cds-color-bg-primary); color: var(--cds-color-primary); border: 1px solid var(--cds-color-primary); cursor: pointer; font-weight: 500; font-family: var(--cds-font-family); transition: all 0.15s; }
   .cds-btn-outline:hover { background: #e8f0fe; }
   .market-fold { font-size: 13px; color: var(--cds-color-text-tertiary); padding: 6px 0; cursor: pointer; }
@@ -135,7 +135,7 @@
   /* Alert box (CDS warning pattern) */
   .market-alert-box { background: #fff; border: none; padding: 16px 20px 20px; margin-top: 0; }
   .market-alert-title { font-size: 14px; font-weight: 600; color: #ca8a04; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
-  .market-alert-entry { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #f3f4f6; }
+  .market-alert-entry { margin-bottom: 12px; padding: 10px 14px; border: 1px solid var(--cds-color-border-primary); border-radius: var(--cds-border-radius-lg); display: flex; justify-content: space-between; align-items: center; }
   .market-alert-entry:last-of-type { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
   .market-alert-name { font-size: 14px; font-weight: 700; color: var(--cds-color-text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
   .market-alert-name .waiting-days { font-size: 12px; font-weight: 500; color: var(--cds-color-text-tertiary); }
@@ -358,24 +358,30 @@
           </div>
           <div class="market-alert-box">
             <div class="market-alert-entry">
-              <div class="market-alert-name">G마켓 <span class="waiting-days">신청일 2025-11-27</span></div>
-              <div class="market-alert-desc">서브 계정을 발급해 주세요.</div>
+              <div>
+                <div class="market-alert-name">G마켓 <span class="waiting-days">신청일 2025-11-27</span></div>
+                <div class="market-alert-desc">서브 계정을 발급해 주세요.</div>
+              </div>
               <div class="market-alert-cta">
                 <button class="cds-btn-guide">설정 방법 보기</button>
                 <button class="cds-btn-outline">판매자센터로 이동 &#8250;</button>
               </div>
             </div>
             <div class="market-alert-entry">
-              <div class="market-alert-name">롯데ON <span class="waiting-days">신청일 2026-02-28</span></div>
-              <div class="market-alert-desc">마켓 기본 정보를 등록해 주세요.</div>
+              <div>
+                <div class="market-alert-name">롯데ON <span class="waiting-days">신청일 2026-02-28</span></div>
+                <div class="market-alert-desc">마켓 기본 정보를 등록해 주세요.</div>
+              </div>
               <div class="market-alert-cta">
                 <button class="cds-btn-guide">설정 방법 보기</button>
                 <button class="cds-btn-outline">판매자센터로 이동 &#8250;</button>
               </div>
             </div>
             <div class="market-alert-entry">
-              <div class="market-alert-name">11번가 <span class="waiting-days">신청일 2025-11-27</span></div>
-              <div class="market-alert-desc">서브 계정 발급과 기본 정보 등록이 필요해요.</div>
+              <div>
+                <div class="market-alert-name">11번가 <span class="waiting-days">신청일 2025-11-27</span></div>
+                <div class="market-alert-desc">서브 계정 발급과 기본 정보 등록이 필요해요.</div>
+              </div>
               <div class="market-alert-cta">
                 <button class="cds-btn-guide">설정 방법 보기</button>
                 <button class="cds-btn-outline">판매자센터로 이동 &#8250;</button>
