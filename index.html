@@ -69,8 +69,8 @@
   .cds-btn-sm { padding: 4px 10px; font-size: 12px; }
   .cds-btn-cta { background: var(--cds-color-primary); color: #fff; border-color: var(--cds-color-primary); }
   .cds-btn-cta:hover { background: #1950E9; }
-  .cds-btn-guide { padding: 7px 16px; font-size: 13px; border-radius: 6px; background: var(--cds-color-primary); color: #fff; border: 1px solid var(--cds-color-primary); cursor: pointer; font-weight: 500; font-family: var(--cds-font-family); transition: all 0.15s; }
-  .cds-btn-guide:hover { background: #1950E9; }
+  .cds-btn-guide { padding: 7px 16px; font-size: 13px; border-radius: 6px; background: var(--cds-color-bg-primary); color: var(--cds-color-text-primary); border: 1px solid #d1d5db; cursor: pointer; font-weight: 500; font-family: var(--cds-font-family); transition: all 0.15s; }
+  .cds-btn-guide:hover { background: var(--cds-color-bg-secondary); border-color: #9ca3af; }
 
   /* Chip (CDS) */
   .cds-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: var(--cds-border-radius-full); font-size: 12px; font-weight: 500; }
@@ -111,12 +111,12 @@
   .alert-header-left { display: flex; align-items: center; gap: 8px; }
   .alert-header-icon { width: 20px; height: 20px; background: #dc2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0; }
   .alert-header-text { font-size: 14px; font-weight: 600; color: #dc2626; }
-  .alert-header-sub { font-size: 13px; color: #b91c1c; margin-top: 4px; }
+  .alert-header-sub { font-size: 13px; color: #991b1b; margin-top: 4px; }
 
   /* CTA 버튼 분리 스타일 */
   .market-alert-cta { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
-  .cds-btn-outline { padding: 7px 16px; font-size: 13px; border-radius: 6px; background: var(--cds-color-bg-primary); color: var(--cds-color-primary); border: 1px solid var(--cds-color-primary); cursor: pointer; font-weight: 500; font-family: var(--cds-font-family); transition: all 0.15s; }
-  .cds-btn-outline:hover { background: #e8f0fe; }
+  .cds-btn-outline { padding: 7px 16px; font-size: 13px; border-radius: 6px; background: var(--cds-color-bg-primary); color: var(--cds-color-text-primary); border: 1px solid #d1d5db; cursor: pointer; font-weight: 500; font-family: var(--cds-font-family); transition: all 0.15s; }
+  .cds-btn-outline:hover { background: var(--cds-color-bg-secondary); border-color: #9ca3af; }
   .market-fold { font-size: 13px; color: var(--cds-color-text-tertiary); padding: 6px 0; cursor: pointer; }
   .promo-link { color: var(--cds-color-primary); font-size: 13px; cursor: pointer; white-space: nowrap; }
   .promo-link:hover { text-decoration: underline; }
@@ -347,20 +347,21 @@
           </div>
         </div>
 
-        <!-- ====== A안: 마켓별 분리 (케이스별 다른 문구) ====== -->
-        <div style="margin-bottom:8px; font-size:12px; font-weight:600; color:#084FFF; background:#e8f0fe; display:inline-block; padding:2px 10px; border-radius:4px;">A안: 마켓별 분리</div>
+        <!-- 경고 영역 -->
         <div class="alert-box-wrap">
           <div class="alert-header">
             <div class="alert-header-left">
               <span class="alert-header-icon">!</span>
               <span class="alert-header-text">마켓 3개에서 아직 상품을 팔 수 없어요</span>
             </div>
+            <div class="alert-header-sub">판매자센터에서 추가 설정이 필요해요</div>
           </div>
           <div class="market-alert-box">
             <div class="market-alert-entry">
-              <div>
-                <div class="market-alert-name">G마켓 <span class="waiting-days">신청일 2025-11-27</span></div>
-                <div class="market-alert-desc">서브 계정을 발급해 주세요.</div>
+              <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:0;">
+                <span style="font-weight:700; white-space:nowrap;">G마켓</span>
+                <span style="color:var(--cds-color-text-tertiary);">|</span>
+                <span class="market-alert-desc" style="margin:0;">부운영자 계정을 등록해 주세요.</span>
               </div>
               <div class="market-alert-cta">
                 <button class="cds-btn-guide">설정 방법 보기</button>
@@ -368,9 +369,10 @@
               </div>
             </div>
             <div class="market-alert-entry">
-              <div>
-                <div class="market-alert-name">롯데ON <span class="waiting-days">신청일 2026-02-28</span></div>
-                <div class="market-alert-desc">마켓 기본 정보를 등록해 주세요.</div>
+              <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:0;">
+                <span style="font-weight:700; white-space:nowrap;">롯데ON</span>
+                <span style="color:var(--cds-color-text-tertiary);">|</span>
+                <span class="market-alert-desc" style="margin:0;">마켓 기본 정보를 등록해 주세요.</span>
               </div>
               <div class="market-alert-cta">
                 <button class="cds-btn-guide">설정 방법 보기</button>
@@ -378,9 +380,10 @@
               </div>
             </div>
             <div class="market-alert-entry">
-              <div>
-                <div class="market-alert-name">11번가 <span class="waiting-days">신청일 2025-11-27</span></div>
-                <div class="market-alert-desc">서브 계정 발급과 기본 정보 등록이 필요해요.</div>
+              <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:0;">
+                <span style="font-weight:700; white-space:nowrap;">11번가</span>
+                <span style="color:var(--cds-color-text-tertiary);">|</span>
+                <span class="market-alert-desc" style="margin:0;">부운영자 등록과 기본 정보 설정이 필요해요.</span>
               </div>
               <div class="market-alert-cta">
                 <button class="cds-btn-guide">설정 방법 보기</button>
@@ -393,57 +396,6 @@
           </div>
         </div>
 
-        <!-- ====== B안: 하나로 합침 ====== -->
-        <div style="margin-top:24px; margin-bottom:8px; font-size:12px; font-weight:600; color:#059669; background:#f0fdf4; display:inline-block; padding:2px 10px; border-radius:4px;">B안: 하나로 합침</div>
-        <div class="alert-box-wrap">
-          <div class="alert-header">
-            <div class="alert-header-left">
-              <span class="alert-header-icon">!</span>
-              <span class="alert-header-text">마켓 3개에서 아직 상품을 팔 수 없어요</span>
-            </div>
-          </div>
-          <div class="market-alert-box">
-            <div style="font-size:14px; color:var(--cds-color-text-secondary); margin-bottom:14px;">판매자센터에서 추가 설정이 필요해요.</div>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border:1px solid var(--cds-color-border-primary); border-radius:var(--cds-border-radius-lg);">
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <span class="chip-icon" style="background:#2db400; width:22px; height:22px; font-size:10px;">G</span>
-                  <span style="font-size:14px; font-weight:600;">G마켓</span>
-                  <span style="font-size:12px; color:var(--cds-color-text-tertiary);">신청일 2025-11-27</span>
-                </div>
-                <div style="display:flex; gap:4px;">
-                  <button class="cds-btn-guide">설정 방법 보기</button>
-                  <button class="cds-btn-outline">판매자센터 &#8250;</button>
-                </div>
-              </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border:1px solid var(--cds-color-border-primary); border-radius:var(--cds-border-radius-lg);">
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <span class="chip-icon" style="background:#e30613; width:22px; height:22px; font-size:9px;">ON</span>
-                  <span style="font-size:14px; font-weight:600;">롯데ON</span>
-                  <span style="font-size:12px; color:var(--cds-color-text-tertiary);">신청일 2026-02-28</span>
-                </div>
-                <div style="display:flex; gap:4px;">
-                  <button class="cds-btn-guide">설정 방법 보기</button>
-                  <button class="cds-btn-outline">판매자센터 &#8250;</button>
-                </div>
-              </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border:1px solid var(--cds-color-border-primary); border-radius:var(--cds-border-radius-lg);">
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <span class="chip-icon" style="background:#ff6900; width:22px; height:22px; font-size:10px;">11</span>
-                  <span style="font-size:14px; font-weight:600;">11번가</span>
-                  <span style="font-size:12px; color:var(--cds-color-text-tertiary);">신청일 2025-11-27</span>
-                </div>
-                <div style="display:flex; gap:4px;">
-                  <button class="cds-btn-guide">설정 방법 보기</button>
-                  <button class="cds-btn-outline">판매자센터 &#8250;</button>
-                </div>
-              </div>
-            </div>
-            <div style="font-size:12px; color:var(--cds-color-text-tertiary); margin-top:10px;">
-              설정 완료 후 반영까지 최대 3시간 걸릴 수 있어요.
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="placeholder"><div class="card-title">[기존 유지] 추천 서비스</div></div>
